@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculando Taxa Metabólica Basal (TMB)</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: rgb(200, 192, 239);
+            text-align: center;
+            color: #280659;
+        }
+
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background-color: rgba(52, 22, 113, 0.5);
+            transform: translate(-50%, -50%);
+            width: 30%;
+            padding: 1em;
+            border-radius: 10px;
+        }
+
+        .first-step p {
+            color: #ffffff;
+        }
+
+        button {
+            background-color: #ffffff;
+            color: rgb(41, 6, 91);
+            border: none;
+            padding: 1em;
+            border-radius: 10px;
+            box-shadow: 1px 1px 6px black;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgba(52, 22, 113, 0.5);
+            color: #ffffff
+        }
+
+        .final-step,
+        .second-step {
+            display: none;
+        }
+
+        input {
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+
+        select {
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1>Calculadora de Taxa Metabólica Basal(TMB)</h1>
+    <div class="container">
+        <div class="first-step">
+            <p>Clique no botão para calcular a sua TBM</p>
+            <button onclick="go(1,2)">Iniciar</button>
+        </div>
+        <div class="second-step">
+            <h3>Calculadora de TMB</h3>
+            <hr>
+            <label for="sexo">Sexo:</label>
+            <select id="sexo">
+                <option value="masculino">Masculino</option>
+                <option value="feminino">Feminino</option>
+            </select>
+            <br><br>
+            <label for="peso">Digite seu peso(kg):</label>
+            <input type="number" placeholder="Seu peso" id="peso">
+            <br><br>
+            <label for="altura">Digite a sua altura(cm):</label>
+            <input type="number" placeholder="Sua altura" id="altura">
+            <br><br>
+            <label for="idade">Digite a sua idade:</label>
+            <input type="number" placeholder="Sua idade" id="idade">
+            <br><br>
+            <label for="atividade">Nível de atividade:</label>
+            <select id="atividade">
+                <option value="1.2">Sedentário (pouco ou nenhum exercício)</option>
+                <option value="1.375">Leve (exercício leve ou esportes 1-3 dias por semana)</option>
+                <option value="1.55">Moderado (exercício moderado ou esportes 3-5 dias por semana)</option>
+                <option value="1.725">Ativo (exercício intenso ou esportes 6-7 dias por semana)</option>
+                <option value="1.9">Muito Ativo (trabalho físico ou treino intenso duas vezes por dia)</option>
+            </select>
+            <br><br>
+            <button onclick="validate()">Calcular</button>
+        </div>
+        <div class="final-step">
+            <h3>Resultado!</h3>
+            <p id="resultado"></p>
+            <button onclick="go(3,2)">Calcular Novamente</button>
+            <button onclick="go(3,1)">Finalizar</button>
+        </div>
+    </div>
+</body>
+<script>
+    const firstDiv = document.querySelector('.first-step');
+    const secondDiv = document.querySelector('.second-step');
+    const finalDiv = document.querySelector('.final-step');
+
+    function go(currentStep, nextStep) {
+        let dNone, dBlock;
+        if (currentStep == 1) {
+            dNone = firstDiv;
+        }
+        else if (currentStep == 2) {
+            dNone = secondDiv;
+        }
+        else {
+            dNone = finalDiv
+        }
+        dNone.style.display = 'none';
+
+        if (nextStep == 1) {
+            dBlock = firstDiv;
+        }
+        else if (nextStep == 2) {
+            dBlock = secondDiv;
+        }
+        else {
+            dBlock = finalDiv
+        }
+        dBlock.style.display = 'block';
+    }
+
+    function validate() {
+        var sexo = document.getElementById("sexo").value;
+        var peso = parseFloat(document.getElementById("peso").value);
+        var altura = parseFloat(document.getElementById("altura").value);
+        var idade = parseInt(document.getElementById("idade").value);
+        var atividade = parseFloat(document.getElementById("atividade").value);
+
+        if (isNaN(peso) || isNaN(altura) || isNaN(idade) || isNaN(atividade)) {
+            console.error("Por favor, preencha todos os campos corretamente.");
+            alert("Por favor preencha corretamente os itens!")
+            return;
+        }
+
+        var tmb;
+
+        if (sexo === "masculino") {
+            tmb = 66.5 + (13.75 * peso) + (5.003 * altura) - (6.75 * idade);
+        } else {
+            tmb = 655.1 + (9.563 * peso) + (1.850 * altura) - (4.676 * idade);
+        }
+
+        var tmbComAtividade = tmb * atividade;
+
+        const result = document.getElementById('resultado')
+
+        console.log("Sua TMB com atividade é: " + tmbComAtividade.toFixed(2) + " calorias por dia.");
+        result.innerHTML = 'Sua TMB com atividade é: ' + tmbComAtividade.toFixed(2) + ' calorias por dia.'
+        go(2, 3)
+    }
+
+</script>
+
+</html>
